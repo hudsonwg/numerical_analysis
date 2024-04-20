@@ -1,5 +1,4 @@
 from midiutil.MidiFile import MIDIFile
-from pydub import AudioSegment
 import random
 import os
 def get_random_pitch():

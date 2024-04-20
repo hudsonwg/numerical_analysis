@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from scipy.fftpack import fft
 import winsound
 import time
+
 '''
 make getfftattimeslice(time slice)
 make rootfind(fftslice)
@@ -16,7 +17,6 @@ then map to midi
 warnings.simplefilter("ignore", category=wavfile.WavFileWarning)
 
 def get_fft_at_slice(start, duration, path, plot):
-
 
     fs, data = wavfile.read(path)
     time_slice = duration
@@ -33,18 +33,36 @@ def get_fft_at_slice(start, duration, path, plot):
         d = 2000
         plt.plot(abs(c[:(d - 1)]), 'r')
         plt.show()
+        return abs(c[:(d - 1)])
     else:
         return abs(c[:(d - 1)])
 #def secant_method(list):
+#def gradient_descent(array, guess):
+def simple_localmax(arr, slope_thresh, index, floor):
+    if arr[index+1]-arr[index] < slope_thresh and arr[index] >floor:
+        return index
+    elif arr[index+1]-arr[index] < 0:
+        return simple_localmax(arr, slope_thresh, index + 1, floor)
+    else:
+        return simple_localmax(arr, slope_thresh, index - 1, floor)
+
+def brute_force_max(arr):
+    start_time = time.time()
+    index = 0
+    max = 0
+    for i in range(0, arr.size):
+        if int(arr[i]) > max:
+            index = i
+            max = arr[i]
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    print(f"Elapsed time brute force: {elapsed_time} seconds")
+    return index
 
 if __name__ == '__main__':
-
     slice_size = 0.5
-    for i in range(0, 20):
+    for i in range(0, 1):
         slice = get_fft_at_slice(i, slice_size, 'sample_1.wav', plot=False)
-        freq = np.argmax(slice)
-
+        #print(len(slice))
+        freq = brute_force_max(slice)
         print(freq)
-        winsound.Beep(freq*2, 1000)
-        time.sleep(1)
-
